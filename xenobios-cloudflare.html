@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XenoBios — AI-Powered Physics Engines for BioPhysical Medicine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            color: #1d1d1d;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding: 0 2rem;
+                max-width: 1280px;
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FF3B30 0%, #FF9500 25%, #FFCC00 40%, #34C759 60%, #00B4D8 75%, #0066FF 90%, #6B5BFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .apple-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .apple-card:hover {
+            border-color: rgba(255, 59, 48, 0.2);
+            box-shadow: 0 8px 32px rgba(255, 59, 48, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF3B30 0%, #6B5BFF 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(255, 59, 48, 0.3);
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Navbar */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1d1d1d;
+            text-decoration: none;
+        }
+
+        .logo svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            color: #666666;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FF3B30;
+        }
+
+        .nav-cta {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-cta {
+                display: block;
+            }
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 0;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 0;
+            }
+        }
+
+        h1 {
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: #666666;
+            line-height: 1.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            padding: 8rem 0 6rem;
+        }
+
+        .hero-content {
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            border-radius: 24px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #FF3B30;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero-badge span {
+            width: 6px;
+            height: 6px;
+            background: #FF3B30;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .hero h1 {
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1d1d1d;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        /* Grid Sections */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            padding: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card h3 {
+            color: #1d1d1d;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FF3B30 0%, #6B5BFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1d1d1d;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .code-header {
+            background: #1d1d1d;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot:nth-child(1) { background: #FF3B30; }
+        .code-dot:nth-child(2) { background: #FFCC00; }
+        .code-dot:nth-child(3) { background: #34C759; }
+
+        .code-filename {
+            font-size: 0.8rem;
+            color: #999999;
+            margin-top: 0.5rem;
+        }
+
+        pre {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #e0e0e0;
+            overflow-x: auto;
+            background: #1d1d1d;
+            margin: 0;
+        }
+
+        /* Contact Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1d1d1d;
+            margin-bottom: 0.5rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            color: #1d1d1d;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(255, 59, 48, 0.3);
+            background: rgba(255, 59, 48, 0.02);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 4rem 0 2rem;
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-section h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1d1d1d;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #666666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a:hover {
+            color: #FF3B30;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.75rem; }
+            .hero { padding: 4rem 0 3rem; }
+            section { padding: 3rem 0; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="navbar-content">
+                <a href="#" class="logo">
+                    <svg width="28" height="28" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#FF3B30" />
+                                <stop offset="25%" stopColor="#FF9500" />
+                                <stop offset="40%" stopColor="#FFCC00" />
+                                <stop offset="60%" stopColor="#34C759" />
+                                <stop offset="75%" stopColor="#00B4D8" />
+                                <stop offset="90%" stopColor="#0066FF" />
+                                <stop offset="100%" stopColor="#6B5BFF" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M60 50L80 80L100 50L120 80L140 50M60 150L80 120L100 150L120 120L140 150" stroke="url(#logoGradient)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    </svg>
+                    XenoBios
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#technology">Technology</a></li>
+                    <li><a href="#applications">Applications</a></li>
+                    <li><a href="#platform">Platform</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+                <button class="btn-primary nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span></span>
+                    Advancing Bioelectric Science
+                </div>
+                <h1>AI Powered Physics Engines for<br><span class="gradient-text">BioPhysical Medicine</span></h1>
+                <p>XenoBios develops AI-powered physics engines that model bioelectric fields at nanoscale resolution — enabling next-generation electroceuticals, brain-computer interfaces, and bioelectric medicine.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Request Demo</button>
+                    <button class="btn-secondary" onclick="document.getElementById('platform').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" style="background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);">
+        <div class="container">
+            <h2>Core <span class="gradient-text">Technologies</span></h2>
+            <div class="grid-3">
+                <div class="apple-card card">
+                    <div class="icon">⚡</div>
+                    <h3>Bioelectric Field Simulation</h3>
+                    <p>Model complex bioelectric phenomena at cellular and tissue scales with unprecedented accuracy and speed.</p>
+                </div>
+                <div class="apple-card card">
+                    <div class="icon">🧠</div>
+                    <h3>AI-Powered Physics Engine</h3>
+                    <p>Neural networks trained on experimental data accelerate simulations 1000x while maintaining physical accuracy.</p>
+                </div>
+                <div class="apple-card card">
+                    <div class="icon">🔬</div>
+                    <h3>Multi-Scale Modeling</h3>
+                    <p>Seamlessly bridge molecular, cellular, tissue, and organ-level physics in a unified framework.</p>
+                </div>
+                <div class="apple-card card">
+                    <div class="icon">🎯</div>
+                    <h3>Inverse Problem Solving</h3>
+                    <p>Predict electrode configurations and stimulation parameters for desired bioelectric outcomes.</p>
+                </div>
+                <div class="apple-card card">
+                    <div class="icon">📊</div>
+                    <h3>Real-Time Visualization</h3>
+                    <p>Interactive 3D visualization of bioelectric fields and neural activity in real-time.</p>
+                </div>
+                <div class="apple-card card">
+                    <div class="icon">🔐</div>
+                    <h3>HIPAA-Compliant Infrastructure</h3>
+                    <p>Enterprise-grade security and privacy for sensitive medical and research data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Applications Section -->
+    <section id="applications" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
+        <div class="container">
+            <h2>Applications in <span class="gradient-text">Bioelectric Medicine</span></h2>
+            <div class="grid-3">
+                <div class="apple-card card">
+                    <h3>Electroceuticals</h3>
+                    <p>Design and optimize electrical stimulation therapies for neurological disorders, chronic pain, and autoimmune conditions.</p>
+                </div>
+                <div class="apple-card card">
+                    <h3>Brain-Computer Interfaces</h3>
+                    <p>Engineer high-fidelity BCIs with precise neural recording and stimulation using bioelectric physics models.</p>
+                </div>
+                <div class="apple-card card">
+                    <h3>Bioelectric Medicine</h3>
+                    <p>Harness the electrical language of life to develop novel therapeutics targeting bioelectric dysfunction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Section -->
+    <section id="platform" style="background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="grid-2">
+                <div>
+                    <h2>Built for<br><span class="gradient-text">Production Science</span></h2>
+                    <div style="margin-top: 2rem;">
+                        <div class="apple-card card">
+                            <h3>Developer-First API</h3>
+                            <p>Intuitive Python and C++ interfaces. Run your first simulation in under 10 lines of code.</p>
+                        </div>
+                        <div class="apple-card card" style="margin-top: 1rem;">
+                            <h3>High-Performance Compute</h3>
+                            <p>Optimized for NVIDIA GPUs with multi-GPU scaling. Simulate full organ fields in minutes.</p>
+                        </div>
+                        <div class="apple-card card" style="margin-top: 1rem;">
+                            <h3>Cloud & On-Premise</h3>
+                            <p>Deploy on managed cloud, your infrastructure, or hybrid. HIPAA-compliant data handling.</p>
+                        </div>
+                        <div class="apple-card card" style="margin-top: 1rem;">
+                            <h3>Validated & Certified</h3>
+                            <p>Physics models validated against experimental data. FDA 510(k) pre-submission support.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="apple-card code-block">
+                        <div class="code-header">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-filename">simulation_example.py</div>
+                        </div>
+                        <pre>import xenobios as xb
+
+# Load patient tissue model
+tissue = xb.TissueModel.from_mri("patient.nii")
+
+# Configure electrodes
+electrodes = xb.ElectrodeArray(
+    positions=[[0, 0, 5], [10, 0, 5]],
+    impedance=1.2e3
+)
+
+# Run simulation
+sim = xb.Simulation(
+    tissue=tissue,
+    electrodes=electrodes,
+    frequency=10e3
+)
+
+result = sim.run(duration=0.1)
+field = result.electric_field
+print(f"Peak: {field.max():.2f} V/m")</pre>
+                    </div>
+                    <p style="margin-top: 2rem; font-size: 0.95rem;">The XenoBios SDK is available for research institutions and commercial partners. Request early access to start building with our physics engine.</p>
+                    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" style="margin-top: 1rem;">Get SDK Access</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
+        <div class="container">
+            <div class="grid-2">
+                <div>
+                    <h2>Advancing the<br><span class="gradient-text">Future of Medicine</span></h2>
+                    <p style="margin-top: 2rem; font-size: 1.05rem;">XenoBios was founded in 2025 on the conviction that bioelectric, non-equilibrium thermodynamics, information dynamics, bioelectromagnetics, represent the frontiers in medicine and biology. By combining deep physics understanding with cutting-edge AI, we're building the tools that will unlock the denovo technologies to model biophysical nature of life specifically diseases.</p>
+                    <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="color: #FF3B30; font-size: 1.5rem;">⚡</div>
+                            <div>
+                                <h4 style="font-weight: 600; color: #1d1d1d; margin-bottom: 0.25rem;">Rigorous Science</h4>
+                                <p style="font-size: 0.9rem;">Every claim is grounded in peer-reviewed research and experimental validation.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="color: #FF3B30; font-size: 1.5rem;">🤝</div>
+                            <div>
+                                <h4 style="font-weight: 600; color: #1d1d1d; margin-bottom: 0.25rem;">Open Collaboration</h4>
+                                <p style="font-size: 0.9rem;">We partner with leading academic institutions and industry leaders.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="color: #FF3B30; font-size: 1.5rem;">🏥</div>
+                            <div>
+                                <h4 style="font-weight: 600; color: #1d1d1d; margin-bottom: 0.25rem;">Clinical Impact</h4>
+                                <p style="font-size: 0.9rem;">Our goal is to translate research into therapies that improve human health.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="apple-card card float" style="padding: 2rem;">
+                    <div style="width: 100%; aspect-ratio: 1; border-radius: 16px; background: linear-gradient(135deg, rgba(255, 59, 48, 0.1) 0%, rgba(107, 91, 255, 0.1) 100%); display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+                        <div style="font-size: 4rem; font-weight: 700; background: linear-gradient(135deg, #FF3B30 0%, #6B5BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">MH</div>
+                    </div>
+                    <h3 style="font-size: 1.5rem; color: #1d1d1d; margin-bottom: 0.25rem;">Mudassar Hussain</h3>
+                    <p style="font-size: 0.95rem; font-weight: 600; color: #FF3B30; margin-bottom: 1.5rem;">Founder & CEO</p>
+                    <p style="font-size: 1rem; margin-bottom: 1.5rem;">Mudassar is a visionary leader at the intersection of physics, artificial intelligence, and biomedical science. With deep expertise in computational biophysics and machine learning, he founded XenoBios to democratize access to advanced physics simulation tools for the bioelectric medicine community.</p>
+                    <div class="divider" style="margin: 1.5rem 0;"></div>
+                    <div style="font-size: 0.9rem; color: #666666; line-height: 1.8;">
+                        <p style="margin-bottom: 0.75rem;"><strong>Expertise:</strong> AI Physics Engines, Bioelectric Simulation, Neural Networks</p>
+                        <p><strong>Mission:</strong> Transforming medicine through the Biophysical language of life</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="grid-2">
+                <div>
+                    <h2>Let's Talk<br><span class="gradient-text">About Your Research</span></h2>
+                    <p style="margin-top: 2rem; font-size: 1.05rem;">We partner with research institutions, pharmaceutical companies, and innovators who share our vision of transforming medicine through bioelectric physics.</p>
+                    <div style="margin-top: 3rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="color: #FF3B30; font-size: 1.5rem;">✉️</div>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 600; color: #1d1d1d; margin-bottom: 0.25rem;">Email</div>
+                                <div style="font-size: 1rem; color: #666666;">info@xenobios.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="apple-card" style="padding: 2rem;">
+                    <form onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Dr. Jane Smith" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" placeholder="jane@institution.edu" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Organization</label>
+                            <input type="text" placeholder="MIT / Pfizer / Medtronic...">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea placeholder="Tell us about your research goals..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <svg width="28" height="28" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#FF3B30" />
+                                    <stop offset="25%" stopColor="#FF9500" />
+                                    <stop offset="40%" stopColor="#FFCC00" />
+                                    <stop offset="60%" stopColor="#34C759" />
+                                    <stop offset="75%" stopColor="#00B4D8" />
+                                    <stop offset="90%" stopColor="#0066FF" />
+                                    <stop offset="100%" stopColor="#6B5BFF" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M60 50L80 80L100 50L120 80L140 50M60 150L80 120L100 150L120 120L140 150" stroke="url(#logoGradient2)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                        </svg>
+                        <span style="font-weight: 700; color: #1d1d1d;">XenoBios</span>
+                    </div>
+                    <p>AI-powered physics engines for bioelectric medicine, electroceuticals, and brain-computer interfaces.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#platform">Platform</a></li>
+                        <li><a href="#applications">Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="divider" style="margin: 2rem 0;"></div>
+            <div style="text-align: center; font-size: 0.85rem;">
+                © 2025 XenoBios, Inc. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message! Our team will review your inquiry and respond within 2 business days.');
+            event.target.reset();
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
